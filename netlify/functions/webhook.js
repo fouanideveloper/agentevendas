@@ -10,15 +10,29 @@ function parseCons(name){var n=(name||"").toUpperCase();if((n.indexOf("PS5")>=0&
 function parseConsMeta(o){var m=o.meta_data||[];for(var i=0;i<m.length;i++){var k=(m[i].key||"").toLowerCase();if(k==="billing_console"||k==="console"||k.indexOf("console")>=0){var v=(m[i].value||"").toLowerCase();if(v.indexOf("ps5")>=0||v.indexOf("playstation 5")>=0)return"PS5";if(v.indexOf("ps4")>=0||v.indexOf("playstation 4")>=0)return"PS4";return m[i].value;}}return"";}
 function parseLic(name){var n=(name||"").toLowerCase();return n.indexOf("secund")>=0?"Secundária":"Primária";}
 function gameN(name){return(name||"").split("-")[0].trim();}
+function escHtml(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");}
 async function getGmailToken(){var r=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,refresh_token:process.env.GOOGLE_REFRESH_TOKEN,grant_type:"refresh_token"})});var d=await r.json();return d.access_token;}
-async function createDraft(token,to,subject,body){var email=["To: "+to,"Subject: =?utf-8?B?"+Buffer.from(subject).toString("base64")+"?=","MIME-Version: 1.0","Content-Type: text/plain; charset=utf-8","Content-Transfer-Encoding: base64","",Buffer.from(body).toString("base64")].join("\r\n");var raw=Buffer.from(email).toString("base64").replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");var r=await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({message:{raw:raw}})});return r.json();}
+async function createDraft(token,to,subject,html){
+  var email=[
+    "To: "+to,
+    "Subject: =?utf-8?B?"+Buffer.from(subject).toString("base64")+"?=",
+    "MIME-Version: 1.0",
+    "Content-Type: text/html; charset=utf-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    Buffer.from(html).toString("base64")
+  ].join("\r\n");
+  var raw=Buffer.from(email).toString("base64").replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  var r=await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({message:{raw:raw}})});
+  return r.json();
+}
 exports.handler=async function(event){
   if(event.httpMethod==="OPTIONS")return{statusCode:200,headers:{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Content-Type","Access-Control-Allow-Methods":"POST, OPTIONS"},body:""};
   if(event.httpMethod!=="POST")return{statusCode:405,body:"Method Not Allowed"};
   try{
     var body=event.isBase64Encoded?Buffer.from(event.body,"base64").toString("utf8"):event.body;
     var order=JSON.parse(body);
-    if(!["processing","completed"].includes(order.status))return{statusCode:200,body:JSON.stringify({skipped:true,status:order.status})};
+    if(!["processing","completed"].includes(order.status))return{statusCode:200,body:JSON.stringify({skipped:true})};
     var item=order.line_items[0];
     var cn=((order.billing.first_name||"")+" "+(order.billing.last_name||"")).trim();
     var em=order.billing.email;
@@ -32,19 +46,33 @@ exports.handler=async function(event){
     var subj="Pedido #"+num+" "+gn+" - "+cons+" - DIGITAL - "+lic;
     var sn=process.env.STORE_NAME||"Express Games Digitais";
     var wpp=process.env.STORE_WPP||"";
-    var cr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01","x-api-key":process.env.ANTHROPIC_API_KEY},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,system:"Você é agente da loja "+sn+". Escreva: 1. Saudação calorosa de 1-2 linhas pelo nome. 2. Encerramento de 2 linhas. Formato: [S]texto[/S][E]texto[/E]",messages:[{role:"user",content:"Cliente: "+cn+" | Pedido: #"+num+" | Jogo: "+gn+" | Console: "+cons+" | Licença: "+lic}]})});
+    var cr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01","x-api-key":process.env.ANTHROPIC_API_KEY},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,system:"Você é agente da loja "+sn+". Escreva: 1. Saudação calorosa de 1-2 linhas. 2. Encerramento de 2 linhas. Formato: [S]texto[/S][E]texto[/E]",messages:[{role:"user",content:"Cliente: "+cn+" | Pedido: #"+num+" | Jogo: "+gn+" | Console: "+cons+" | Licença: "+lic}]})});
     var cd=await cr.json();
     var ct=(cd.content||[]).map(function(c){return c.text||"";}).join("");
     var sm=ct.match(/\[S\]([\s\S]*?)\[\/S\]/);
     var em2=ct.match(/\[E\]([\s\S]*?)\[\/E\]/);
     var sau=sm?sm[1].trim():"Olá, "+cn+"! Seu pedido foi confirmado.";
     var enc=em2?em2[1].trim():"Qualquer dúvida estamos à disposição!";
-    var a3=tut.alert?"\u26a0\ufe0f "+tut.alert+"\n\u26a0\ufe0f "+tut.alert+"\n\u26a0\ufe0f "+tut.alert+"\n\n":"";
-    var lk=tut.link?"VÍDEO TUTORIAL ("+TL[tk]+"): "+tut.link+"\n\n":"";
-    var wl=wpp?"WhatsApp: "+wpp+"\n":"";
-    var emailBody=sau+"\n\n--- DADOS DE ACESSO --- (preencha antes de enviar)\nEmail: [ PREENCHER ]\nSenha: [ PREENCHER ]\nCódigo: [ PREENCHER ]\n\n"+a3+lk+tut.text+"\n\n"+enc+"\n\nEquipe "+sn+"\n"+wl+"Pedido: #"+num;
+    var wl=wpp?"WhatsApp: "+wpp+"<br>":"";
+    var alertHtml='<p style="color:red;font-weight:bold;margin:8px 0">'+tut.alert+'</p>'+'<p style="color:red;font-weight:bold;margin:8px 0">'+tut.alert+'</p>'+'<p style="color:red;font-weight:bold;margin:8px 0">'+tut.alert+'</p>';
+    var tutLink=tut.link?'<p><strong>VÍDEO DE TUTORIAL ("+TL[tk]+"): </strong><a href="'+tut.link+'">'+tut.link+'</a></p>':"";
+    var html='<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#222">'+
+      '<p>'+sau+'</p>'+
+      '<table style="border:1px solid #ccc;border-collapse:collapse;margin:16px 0">'+
+      '<tr style="background:#f5f5f5"><td colspan="2" style="padding:8px 12px;font-weight:bold;border:1px solid #ccc">Dados de acesso — preencha antes de enviar</td></tr>'+
+      '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Email</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1;font-family:monospace">[ PREENCHER ]</td></tr>'+
+      '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Senha</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1;font-family:monospace">[ PREENCHER ]</td></tr>'+
+      '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Código</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1;font-family:monospace">[ PREENCHER ]</td></tr>'+
+      '</table>'+
+      alertHtml+
+      tutLink+
+      '<p>'+escHtml(tut.text)+'</p>'+
+      '<p>'+enc+'</p>'+
+      '<hr style="margin:16px 0">'+
+      '<p style="color:#666;font-size:12px">Equipe '+sn+'<br>'+wl+'Pedido: #'+num+'</p>'+
+      '</body></html>';
     var at=await getGmailToken();
-    var draft=await createDraft(at,em,subj,emailBody);
+    var draft=await createDraft(at,em,subj,html);
     return{statusCode:200,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({success:true,draftId:draft.id,order:num,client:cn,tutorial:TL[tk]})};
   }catch(e){return{statusCode:500,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({error:e.message})};}
 };
