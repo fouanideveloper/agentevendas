@@ -1,4 +1,5 @@
-const { getStore } = require("@netlify/blobs");
+// In-memory dedup cache (resets on cold start, but prevents rapid duplicate calls)
+const processed = {};
 
 var TL = {
   "prima-ps5": "Primária PS5",
@@ -183,15 +184,12 @@ exports.handler = async function(event) {
 
     var num = order.number || order.id;
 
-    // Deduplication: check if this order was already processed
-    const store = getStore("processed-orders");
+    // Deduplication: ignore same order processed in last 60 seconds
     const key = "order-" + num;
-    try {
-      const existing = await store.get(key);
-      if (existing) {
-        return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ skipped: true, reason: "already processed", order: num }) };
-      }
-    } catch(e) {}
+    const now = Date.now();
+    if (processed[key] && (now - processed[key]) < 60000) {
+      return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ skipped: true, reason: "already processed", order: num }) };
+    }
 
     var cn = ((order.billing.first_name || "") + " " + (order.billing.last_name || "")).trim();
     var sn = process.env.STORE_NAME || "Express Games Digitais";
@@ -205,9 +203,7 @@ exports.handler = async function(event) {
     }
 
     // Mark as processed
-    try {
-      await store.set(key, JSON.stringify({ processed: new Date().toISOString(), drafts: drafts.length }));
-    } catch(e) {}
+    processed[key] = Date.now();
 
     return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ success: true, drafts: drafts, count: drafts.length }) };
   } catch(e) {
