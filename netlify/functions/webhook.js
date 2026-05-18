@@ -1,109 +1,50 @@
-const TUT_LABELS = {"prima-ps5":"Primária PS5","prima-ps4":"Primária PS4","secun-ps5":"Secundária PS5","secun-ps4":"Secundária PS4"};
-
-function getTutKey(cons,lic){
-  var c=(cons||"").toLowerCase(),l=(lic||"").toLowerCase();
-  var ps5=c.includes("ps5")||c.includes("playstation 5");
-  var ps4=c.includes("ps4")||c.includes("playstation 4");
-  var prim=l.includes("prim");
-  var sec=l.includes("secun")||l.includes("secondary");
-  if(prim&&ps5)return"prima-ps5";
-  if(prim&&ps4)return"prima-ps4";
-  if(sec&&ps5)return"secun-ps5";
-  if(sec&&ps4)return"secun-ps4";
-  return prim?"prima-ps5":"secun-ps5";
-}
-
-function parseConsole(name){
-  var n=(name||"").toUpperCase();
-  if((n.includes("PS5")&&n.includes("PS4"))||n.includes("PS4/PS5"))return"PS5";
-  if(n.includes("PS5"))return"PS5";
-  if(n.includes("PS4"))return"PS4";
-  return"PS5";
-}
-
-function parseConsoleMeta(order){
-  var meta=order.meta_data||[];
-  var f=meta.find(function(m){var k=(m.key||"").toLowerCase();return k==="billing_console"||k==="console"||k.includes("console");});
-  if(!f)return"";
-  var v=(f.value||"").toLowerCase();
-  if(v.includes("ps5")||v.includes("playstation 5"))return"PS5";
-  if(v.includes("ps4")||v.includes("playstation 4"))return"PS4";
-  return f.value;
-}
-
-function parseLicense(name){
-  var n=(name||"").toLowerCase();
-  if(n.includes("secund"))return"Secundária";
-  return"Primária";
-}
-
-function gameNameFrom(name){return(name||"").split("-")[0].trim();}
-
-async function getGmailToken(){
-  var r=await fetch("https://oauth2.googleapis.com/token",{
-    method:"POST",
-    headers:{"Content-Type":"application/x-www-form-urlencoded"},
-    body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,refresh_token:process.env.GOOGLE_REFRESH_TOKEN,grant_type:"refresh_token"})
-  });
-  var d=await r.json();
-  return d.access_token;
-}
-
-async function createDraft(token,to,subject,body){
-  var email=["To: "+to,"Subject: =?utf-8?B?"+Buffer.from(subject).toString("base64")+"?=","MIME-Version: 1.0","Content-Type: text/plain; charset=utf-8","Content-Transfer-Encoding: base64","",Buffer.from(body).toString("base64")].join("\r\n");
-  var raw=Buffer.from(email).toString("base64").replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  var r=await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts",{
-    method:"POST",
-    headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
-    body:JSON.stringify({message:{raw:raw}})
-  });
-  return r.json();
-}
-
+var TL={"prima-ps5":"Primária PS5","prima-ps4":"Primária PS4","secun-ps5":"Secundária PS5","secun-ps4":"Secundária PS4"};
+var TUTS={
+  "prima-ps5":{alert:"ATENÇÃO - NÃO CRIAR O USUÁRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE",text:"Parabéns! Você adquiriu a sua licença PRIMÁRIA que te dá direito a usar esta conta em 1 VÍDEO GAME!\n\nTERMOS DE GARANTIA E ORIENTAÇÕES\n\n1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).\n2 - Não é permitido RETIRAR verificação de duas etapas da conta.\n3 - O cliente que desobedecer aos itens 1 e 2, irá perder a conta sem direito de devolução.\n4 - A conta não deve ser compartilhada, sob pena de perda de garantia e acesso.\n5 - Em caso de versão errada, jogos errados ou coisa do tipo, nos avise em até 7 dias, em respeito ao prazo legal.\n6 - Usuário primário não pode ficar acessando a conta criada, evitar ao máximo entrar nela, e sempre jogar nos demais usuários presentes no PS5.\n7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e não daremos mais suporte.\n8 - Se excluir a conta do game, ele não abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.\n9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.\n10 - Em caso de formatação do seu PS5, pedimos que grave um vídeo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.\n11 - Em caso de troca de console, pedimos que grave um vídeo excluindo nossa conta antes.\n12 - O acesso é vitalicio, se a conta permanecer no seu console original de primeira compra.\n13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922.",link:"https://www.youtube.com/watch?v=ZnrUUgHKYKA"},
+  "prima-ps4":{alert:"ATENÇÃO - NÃO CRIAR O USUÁRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE",text:"Parabéns! Você adquiriu a sua licença PRIMÁRIA que te dá direito a usar esta conta em 1 VÍDEO GAME!\n\nTERMOS DE GARANTIA E ORIENTAÇÕES\n\n1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).\n2 - Não é permitido RETIRAR verificação de duas etapas da conta.\n3 - O cliente que desobedecer aos itens 1 e 2, irá perder a conta sem direito de devolução.\n4 - A conta não deve ser compartilhada, sob pena de perda de garantia e acesso.\n5 - Em caso de versão errada, jogos errados ou coisa do tipo, nos avise em até 7 dias, em respeito ao prazo legal.\n6 - Usuário primário não pode ficar acessando a conta criada, evitar ao máximo entrar nela, e sempre jogar nos demais usuários presentes no PS4.\n7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e não daremos mais suporte.\n8 - Se excluir a conta do game, ele não abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS4.\n9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.\n10 - Em caso de formatação do seu PS4, pedimos que grave um vídeo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.\n11 - Em caso de troca de console, pedimos que grave um vídeo excluindo nossa conta antes.\n12 - O acesso é vitalicio, se a conta permanecer no seu console original de primeira compra.\n13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922.",link:"https://youtu.be/xvr3oBFi9l0"},
+  "secun-ps5":{alert:"ATENÇÃO - NÃO CRIAR O USUÁRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE",text:"Parabéns! Você adquiriu a sua licença SECUNDÁRIA que te dá direito a usar esta conta em 1 VÍDEO GAME!\n\nTERMOS DE GARANTIA E ORIENTAÇÕES\n\n1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).\n2 - Não é permitido RETIRAR verificação de duas etapas da conta.\n3 - O cliente que desobedecer aos itens 1 e 2, irá perder a conta sem direito de devolução.\n4 - A conta não deve ser compartilhada, sob pena de perda de garantia e acesso.\n5 - Em caso de versão errada, jogos errados ou coisa do tipo, nos avise em até 7 dias, em respeito ao prazo legal.\n6 - Usuário secundário não pode ficar acessando a conta criada, evitar ao máximo entrar nela, e sempre jogar nos demais usuários presentes no PS5.\n7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e não daremos mais suporte.\n8 - Se excluir a conta do game, ele não abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.\n9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.\n10 - Em caso de formatação do seu PS5, pedimos que grave um vídeo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.\n11 - Em caso de troca de console, pedimos que grave um vídeo excluindo nossa conta antes.\n12 - O acesso é vitalicio, se a conta permanecer no seu console original de primeira compra.\n13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922.",link:"https://www.youtube.com/watch?v=ZnrUUgHKYKA"},
+  "secun-ps4":{alert:"ATENÇÃO - NÃO CRIAR O USUÁRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE",text:"Parabéns! Você adquiriu a sua licença SECUNDÁRIA que te dá direito a usar esta conta em 1 VÍDEO GAME!\n\nTERMOS DE GARANTIA E ORIENTAÇÕES\n\n1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).\n2 - Não é permitido RETIRAR verificação de duas etapas da conta.\n3 - O cliente que desobedecer aos itens 1 e 2, irá perder a conta sem direito de devolução.\n4 - A conta não deve ser compartilhada, sob pena de perda de garantia e acesso.\n5 - Em caso de versão errada, jogos errados ou coisa do tipo, nos avise em até 7 dias, em respeito ao prazo legal.\n6 - Usuário secundário não pode ficar acessando a conta criada, evitar ao máximo entrar nela, e sempre jogar nos demais usuários presentes no PS4.\n7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e não daremos mais suporte.\n8 - Se excluir a conta do game, ele não abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS4.\n9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.\n10 - Em caso de formatação do seu PS4, pedimos que grave um vídeo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.\n11 - Em caso de troca de console, pedimos que grave um vídeo excluindo nossa conta antes.\n12 - O acesso é vitalicio, se a conta permanecer no seu console original de primeira compra.\n13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922.",link:"https://www.youtube.com/watch?v=pTt1vyr0tLw&t=54s"}
+};
+function getTK(cons,lic){var c=(cons||"").toLowerCase(),l=(lic||"").toLowerCase();var ps5=c.indexOf("ps5")>=0||c.indexOf("playstation 5")>=0;var ps4=c.indexOf("ps4")>=0||c.indexOf("playstation 4")>=0;var prim=l.indexOf("prim")>=0;var sec=l.indexOf("secun")>=0;if(prim&&ps5)return"prima-ps5";if(prim&&ps4)return"prima-ps4";if(sec&&ps5)return"secun-ps5";if(sec&&ps4)return"secun-ps4";return prim?"prima-ps5":"secun-ps5";}
+function parseCons(name){var n=(name||"").toUpperCase();if((n.indexOf("PS5")>=0&&n.indexOf("PS4")>=0)||n.indexOf("PS4/PS5")>=0)return"PS5";if(n.indexOf("PS5")>=0)return"PS5";if(n.indexOf("PS4")>=0)return"PS4";return"PS5";}
+function parseConsMeta(o){var m=o.meta_data||[];for(var i=0;i<m.length;i++){var k=(m[i].key||"").toLowerCase();if(k==="billing_console"||k==="console"||k.indexOf("console")>=0){var v=(m[i].value||"").toLowerCase();if(v.indexOf("ps5")>=0||v.indexOf("playstation 5")>=0)return"PS5";if(v.indexOf("ps4")>=0||v.indexOf("playstation 4")>=0)return"PS4";return m[i].value;}}return"";}
+function parseLic(name){var n=(name||"").toLowerCase();return n.indexOf("secund")>=0?"Secundária":"Primária";}
+function gameN(name){return(name||"").split("-")[0].trim();}
+async function getGmailToken(){var r=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,refresh_token:process.env.GOOGLE_REFRESH_TOKEN,grant_type:"refresh_token"})});var d=await r.json();return d.access_token;}
+async function createDraft(token,to,subject,body){var email=["To: "+to,"Subject: =?utf-8?B?"+Buffer.from(subject).toString("base64")+"?=","MIME-Version: 1.0","Content-Type: text/plain; charset=utf-8","Content-Transfer-Encoding: base64","",Buffer.from(body).toString("base64")].join("\r\n");var raw=Buffer.from(email).toString("base64").replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");var r=await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts",{method:"POST",headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({message:{raw:raw}})});return r.json();}
 exports.handler=async function(event){
   if(event.httpMethod==="OPTIONS")return{statusCode:200,headers:{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Content-Type","Access-Control-Allow-Methods":"POST, OPTIONS"},body:""};
   if(event.httpMethod!=="POST")return{statusCode:405,body:"Method Not Allowed"};
   try{
     var body=event.isBase64Encoded?Buffer.from(event.body,"base64").toString("utf8"):event.body;
     var order=JSON.parse(body);
-    if(!["processing","completed"].includes(order.status))return{statusCode:200,body:JSON.stringify({skipped:true})};
+    if(!["processing","completed"].includes(order.status))return{statusCode:200,body:JSON.stringify({skipped:true,status:order.status})};
     var item=order.line_items[0];
-    var clientName=((order.billing.first_name||"")+" "+(order.billing.last_name||"")).trim();
-    var clientEmail=order.billing.email;
-    var orderNum=order.number||order.id;
-    var cons=parseConsole(item.name)||parseConsoleMeta(order)||"PS5";
-    var licMeta=(item.meta_data||[]).find(function(m){return m.key==="Licenças"||(m.key||"").toLowerCase().includes("licen");});
-    var lic=licMeta?licMeta.value:parseLicense(item.name);
-    var tutKey=getTutKey(cons,lic);
-    var tutLabel=TUT_LABELS[tutKey];
-    var gameName=gameNameFrom(item.name);
-    var subject="Pedido #"+orderNum+" "+gameName+" - "+cons+" - DIGITAL - "+lic;
-    var envKey=tutKey.replace(/-/g,"_").toUpperCase();
-    var tutText=process.env["TUT_TEXT_"+envKey]||"";
-    var tutAlert=process.env["TUT_ALERT_"+envKey]||"";
-    var tutLink=process.env["TUT_LINK_"+envKey]||"";
-    var storeName=process.env.STORE_NAME||"Express Games Digitais";
-    var storeWpp=process.env.STORE_WPP||"";
-    var cr=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01","x-api-key":process.env.ANTHROPIC_API_KEY},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system:"Você é agente de fulfillment da loja "+storeName+". Escreva APENAS: 1. Saudação calorosa de 1-2 linhas 2. Encerramento de 2-3 linhas confirmando licença "+lic+". Formato: [SAUDACAO]texto[/SAUDACAO][ENCERRAMENTO]texto[/ENCERRAMENTO]",messages:[{role:"user",content:"Cliente: "+clientName+" | Pedido: #"+orderNum+" | Jogo: "+gameName+" | Console: "+cons+" | Licença: "+lic}]})
-    });
+    var cn=((order.billing.first_name||"")+" "+(order.billing.last_name||"")).trim();
+    var em=order.billing.email;
+    var num=order.number||order.id;
+    var cons=parseCons(item.name)||parseConsMeta(order)||"PS5";
+    var lm=(item.meta_data||[]).find(function(m){return m.key==="Licenças"||(m.key||"").toLowerCase().indexOf("licen")>=0;});
+    var lic=lm?lm.value:parseLic(item.name);
+    var tk=getTK(cons,lic);
+    var tut=TUTS[tk]||TUTS["prima-ps5"];
+    var gn=gameN(item.name);
+    var subj="Pedido #"+num+" "+gn+" - "+cons+" - DIGITAL - "+lic;
+    var sn=process.env.STORE_NAME||"Express Games Digitais";
+    var wpp=process.env.STORE_WPP||"";
+    var cr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01","x-api-key":process.env.ANTHROPIC_API_KEY},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,system:"Você é agente da loja "+sn+". Escreva: 1. Saudação calorosa de 1-2 linhas pelo nome. 2. Encerramento de 2 linhas. Formato: [S]texto[/S][E]texto[/E]",messages:[{role:"user",content:"Cliente: "+cn+" | Pedido: #"+num+" | Jogo: "+gn+" | Console: "+cons+" | Licença: "+lic}]})});
     var cd=await cr.json();
     var ct=(cd.content||[]).map(function(c){return c.text||"";}).join("");
-    var sm=ct.match(/\[SAUDACAO\]([\s\S]*?)\[\/SAUDACAO\]/);
-    var em=ct.match(/\[ENCERRAMENTO\]([\s\S]*?)\[\/ENCERRAMENTO\]/);
-    var saudacao=sm?sm[1].trim():"Olá, "+clientName+"! Seu pedido foi confirmado.";
-    var enc=em?em[1].trim():"Qualquer dúvida estamos à disposição!";
-    var alertLine=tutAlert?"⚠️ "+tutAlert+"\n⚠️ "+tutAlert+"\n⚠️ "+tutAlert+"\n\n":"";
-    var linkLine=tutLink?"VÍDEO TUTORIAL ("+tutLabel+"): "+tutLink+"\n\n":"";
-    var textLine=tutText?"INSTRUÇÕES DE ATIVAÇÃO:\n"+tutText+"\n\n":"";
-    var wppLine=storeWpp?"WhatsApp: "+storeWpp+"\n":"";
-    var emailBody=saudacao+"\n\n--- DADOS DE ACESSO --- (preencha antes de enviar)\nEmail: [ PREENCHER ]\nSenha: [ PREENCHER ]\nCódigo: [ PREENCHER ]\n\n"+alertLine+linkLine+textLine+enc+"\n\nEquipe "+storeName+"\n"+wppLine+"Pedido: #"+orderNum;
+    var sm=ct.match(/\[S\]([\s\S]*?)\[\/S\]/);
+    var em2=ct.match(/\[E\]([\s\S]*?)\[\/E\]/);
+    var sau=sm?sm[1].trim():"Olá, "+cn+"! Seu pedido foi confirmado.";
+    var enc=em2?em2[1].trim():"Qualquer dúvida estamos à disposição!";
+    var a3=tut.alert?"\u26a0\ufe0f "+tut.alert+"\n\u26a0\ufe0f "+tut.alert+"\n\u26a0\ufe0f "+tut.alert+"\n\n":"";
+    var lk=tut.link?"VÍDEO TUTORIAL ("+TL[tk]+"): "+tut.link+"\n\n":"";
+    var wl=wpp?"WhatsApp: "+wpp+"\n":"";
+    var emailBody=sau+"\n\n--- DADOS DE ACESSO --- (preencha antes de enviar)\nEmail: [ PREENCHER ]\nSenha: [ PREENCHER ]\nCódigo: [ PREENCHER ]\n\n"+a3+lk+tut.text+"\n\n"+enc+"\n\nEquipe "+sn+"\n"+wl+"Pedido: #"+num;
     var at=await getGmailToken();
-    var draft=await createDraft(at,clientEmail,subject,emailBody);
-    return{statusCode:200,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({success:true,draftId:draft.id,order:orderNum})};
-  }catch(e){
-    return{statusCode:500,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({error:e.message})};
-  }
+    var draft=await createDraft(at,em,subj,emailBody);
+    return{statusCode:200,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({success:true,draftId:draft.id,order:num,client:cn,tutorial:TL[tk]})};
+  }catch(e){return{statusCode:500,headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify({error:e.message})};}
 };
