@@ -1,3 +1,5 @@
+const { getStore } = require("@netlify/blobs");
+
 var TL = {
   "prima-ps5": "Primária PS5",
   "prima-ps4": "Primária PS4",
@@ -178,8 +180,20 @@ exports.handler = async function(event) {
     var body = event.isBase64Encoded ? Buffer.from(event.body, "base64").toString("utf8") : event.body;
     var order = JSON.parse(body);
     if (!["processing", "completed"].includes(order.status)) return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
-    var cn = ((order.billing.first_name || "") + " " + (order.billing.last_name || "")).trim();
+
     var num = order.number || order.id;
+
+    // Deduplication: check if this order was already processed
+    const store = getStore("processed-orders");
+    const key = "order-" + num;
+    try {
+      const existing = await store.get(key);
+      if (existing) {
+        return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ skipped: true, reason: "already processed", order: num }) };
+      }
+    } catch(e) {}
+
+    var cn = ((order.billing.first_name || "") + " " + (order.billing.last_name || "")).trim();
     var sn = process.env.STORE_NAME || "Express Games Digitais";
     var wpp = process.env.STORE_WPP || "";
     var cm = pConsMeta(order);
@@ -189,6 +203,12 @@ exports.handler = async function(event) {
       var res = await makeDraft(tok, order.line_items[i], order, cn, num, sn, wpp, cm);
       drafts.push(res);
     }
+
+    // Mark as processed
+    try {
+      await store.set(key, JSON.stringify({ processed: new Date().toISOString(), drafts: drafts.length }));
+    } catch(e) {}
+
     return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ success: true, drafts: drafts, count: drafts.length }) };
   } catch(e) {
     return { statusCode: 500, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: e.message }) };
