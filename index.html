@@ -1,1 +1,275 @@
-PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InB0LUJSIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9IlVURi04Ii8+CjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIi8+CjxtZXRhIGh0dHAtZXF1aXY9IkNvbnRlbnQtU2VjdXJpdHktUG9saWN5IiBjb250ZW50PSJkZWZhdWx0LXNyYyAnc2VsZicgJ3Vuc2FmZS1pbmxpbmUnICd1bnNhZmUtZXZhbCc7IGNvbm5lY3Qtc3JjICo7IGZvbnQtc3JjICo7IHN0eWxlLXNyYyAqICd1bnNhZmUtaW5saW5lJzsgc2NyaXB0LXNyYyAnc2VsZicgJ3Vuc2FmZS1pbmxpbmUnICd1bnNhZmUtZXZhbCcgKjsgaW1nLXNyYyAqIGRhdGE6OyI+Cjx0aXRsZT5FeHByZXNzIEdhbWVzIOKAlCBGdWxmaWxsbWVudDwvdGl0bGU+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Express Games — Fulfillment</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg2:#f8f8f7;--bg3:#f0efeb;--tx:#1a1a1a;--tx2:#6b6b6b;--tx3:#aaa;--bd:rgba(0,0,0,.13);--bd2:rgba(0,0,0,.25);--ibg:#e6f1fb;--itx:#0c447c;--sbg:#eaf3de;--stx:#27500a;--wbg:#faeeda;--wtx:#633806;--dbg:#fcebeb;--dtx:#791f1f;--r:8px;--rl:12px;--font:'Segoe UI',system-ui,sans-serif}
+body{font-family:var(--font);background:var(--bg3);min-height:100vh;padding:20px}
+.wrap{max-width:760px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:14px}
+.av{width:38px;height:38px;border-radius:50%;background:var(--ibg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.av i{font-size:19px;color:var(--itx)}.an{font-size:15px;font-weight:700;color:var(--tx)}.ad{font-size:12px;color:var(--tx2);margin-top:1px}
+.pill{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--stx);background:var(--sbg);padding:4px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.mtabs{display:flex;gap:3px;background:var(--bg2);border-radius:var(--r);padding:4px;margin-bottom:14px;border:1px solid var(--bd)}
+.mtab{flex:1;padding:8px 4px;font-size:12px;font-weight:600;border:none;background:transparent;border-radius:6px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--font);transition:all .15s}
+.mtab.active{background:var(--bg);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.1);border:1px solid var(--bd)}
+.mpanel{display:none}.mpanel.active{display:block}
+.card{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;margin-bottom:12px}
+.cl{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.fg{display:flex;flex-direction:column;gap:4px}.fg.s2{grid-column:1/-1}
+label{font-size:13px;color:var(--tx2);font-weight:500}
+input,select,textarea{font-size:13px;padding:7px 10px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--bg);color:var(--tx);font-family:var(--font);width:100%;transition:border .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px rgba(55,138,221,.12)}
+input.readonly{background:var(--bg2);color:var(--itx);font-weight:700;cursor:default}
+textarea{resize:vertical;line-height:1.6}
+.notice{padding:9px 12px;border-radius:var(--r);font-size:12.5px;margin-bottom:10px;display:flex;align-items:flex-start;gap:7px;line-height:1.5}
+.ni{background:var(--ibg);color:var(--itx)}.nw{background:var(--wbg);color:var(--wtx)}.ns{background:var(--sbg);color:var(--stx)}
+.notice i{flex-shrink:0;margin-top:1px}
+.ttabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.ttab{padding:6px 13px;font-size:12px;font-weight:700;border:1px solid var(--bd2);border-radius:var(--r);cursor:pointer;background:transparent;color:var(--tx2);font-family:var(--font);display:flex;align-items:center;gap:6px;transition:all .15s}
+.ttab.active{background:var(--ibg);color:var(--itx);border-color:rgba(55,138,221,.4)}
+.ttab .tdot{width:7px;height:7px;border-radius:50%;background:#639922;display:none}.ttab.filled .tdot{display:inline-block}
+.tpanel{display:none}.tpanel.active{display:block}.tfield{margin-bottom:10px}.tfield label{display:block;margin-bottom:4px}
+.btn-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.btn{padding:8px 15px;font-size:13px;font-weight:600;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font);transition:background .15s;border:1px solid var(--bd2);background:var(--bg);color:var(--tx)}
+.btn:hover{background:var(--bg2)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{border-color:var(--stx);color:var(--stx)}.btn-green:hover{background:var(--sbg)}
+.btn-red{border-color:var(--dtx);color:var(--dtx)}.btn-red:hover{background:var(--dbg)}
+.btn-primary{background:var(--tx);color:#fff;border-color:var(--tx);font-size:14px;font-weight:700;justify-content:center;width:100%;padding:12px}.btn-primary:hover{opacity:.85}
+.toast{font-size:12px;color:var(--stx);display:none;font-weight:700;background:var(--sbg);padding:5px 10px;border-radius:20px}
+.badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;white-space:nowrap}
+.b-ok{background:var(--sbg);color:var(--stx)}.b-warn{background:var(--wbg);color:var(--wtx)}.b-info{background:var(--ibg);color:var(--itx)}.b-danger{background:var(--dbg);color:var(--dtx)}.b-gray{background:var(--bg2);color:var(--tx2)}
+.order-box{border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-top:10px}
+.order-head{padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.order-title{font-size:14px;font-weight:700;color:var(--tx)}.order-badges{display:flex;gap:5px;flex-wrap:wrap}
+.order-body{padding:10px 14px}.orow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd);font-size:13px;gap:10px}
+.orow:last-child{border:none}.orow .ok{color:var(--tx2)}.orow .ov{color:var(--tx);font-weight:700;text-align:right}
+.icard{border:1px solid var(--bd);border-radius:var(--rl);padding:12px 14px;margin-bottom:8px}
+.iname{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:8px;line-height:1.4}
+.ibadges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.imeta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.tut-prev{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;margin-top:10px;display:none}
+.tut-prev.show{display:block}.tut-prev-title{font-size:11px;font-weight:700;color:var(--itx);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.prog{height:4px;border-radius:2px;background:var(--bg3);overflow:hidden;margin-top:8px;display:none}.prog.show{display:block}
+.prog-bar{height:100%;background:#378add;border-radius:2px;animation:prg 2.5s ease-in-out infinite}
+@keyframes prg{0%{width:0}65%{width:85%}100%{width:95%}}
+.thinking{display:none;align-items:center;gap:7px;font-size:13px;color:var(--tx2);padding:6px 0}.thinking.show{display:flex}
+.dots span{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--tx2);animation:bk 1.2s infinite;margin:0 1px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bk{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.email-wrap{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
+.email-head{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.ehead-row{display:flex;gap:6px;font-size:12.5px;margin-bottom:3px}.ehead-row:last-child{margin:0}
+.elbl{color:var(--tx2);min-width:60px;flex-shrink:0;font-weight:700}.eval{color:var(--tx);font-weight:600;word-break:break-all}
+.email-body{padding:20px;font-size:13.5px;line-height:1.85;color:var(--tx)}
+.cred-box{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:14px 0}
+.cred-head{padding:8px 12px;background:var(--bg2);font-size:12px;font-weight:700;color:var(--tx2);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:5px}
+.cred-row{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid var(--bd);gap:10px}.cred-row:last-child{border:none}
+.cred-lbl{font-size:12px;color:var(--tx2);font-weight:600;min-width:60px;flex-shrink:0}
+.cred-val{font-size:12px;font-weight:700;color:var(--wtx);background:var(--wbg);padding:2px 9px;border-radius:4px;font-family:'Courier New',monospace}
+.alert-box{background:var(--dbg);color:var(--dtx);padding:11px 13px;border-radius:var(--r);font-size:13px;font-weight:700;margin:12px 0;line-height:1.75}
+.yt-link{display:flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid rgba(55,138,221,.3);border-radius:var(--r);background:var(--ibg);color:var(--itx);font-size:13px;font-weight:700;text-decoration:none;margin:10px 0}
+.tut-block{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.75;margin:8px 0;white-space:pre-wrap}
+.sec-title{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.email-footer{border-top:1px solid var(--bd);margin-top:14px;padding-top:10px;font-size:12px;color:var(--tx2)}
+.copy-bar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.empty{padding:4rem 0;text-align:center;color:var(--tx2);font-size:14px;line-height:2}
+.empty i{font-size:40px;display:block;margin-bottom:8px;color:var(--tx3)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.metric{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:11px 13px}
+.metric-lbl{font-size:11px;color:var(--tx2);font-weight:700;margin-bottom:3px}.metric-val{font-size:24px;font-weight:700;color:var(--tx)}
+.hlist{display:flex;flex-direction:column;gap:7px}
+.hitem{display:flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid var(--bd);border-radius:var(--rl);background:var(--bg)}
+.hinfo{flex:1;min-width:0}.hname{font-size:13px;font-weight:700;color:var(--tx)}
+.hdetail{font-size:12px;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.htime{font-size:11px;color:var(--tx3);flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topbar">
+  <div class="av"><i class="ti ti-device-gamepad-2"></i></div>
+  <div><div class="an">Express Games — Agente de Fulfillment</div><div class="ad">Primária PS5 · Primária PS4 · Secundária PS5 · Secundária PS4</div></div>
+  <div class="pill"><div class="dot"></div><span id="si">Carregando...</span></div>
+</div>
+<div class="mtabs">
+  <button class="mtab active" id="mtab-config"><i class="ti ti-settings"></i> Config</button>
+  <button class="mtab" id="mtab-tutoriais"><i class="ti ti-book"></i> Tutoriais</button>
+  <button class="mtab" id="mtab-pedido"><i class="ti ti-shopping-cart"></i> Pedido</button>
+  <button class="mtab" id="mtab-rascunho"><i class="ti ti-mail"></i> Rascunho</button>
+  <button class="mtab" id="mtab-historico"><i class="ti ti-history"></i> Histórico</button>
+</div>
+<div class="mpanel active" id="panel-config">
+  <div class="card"><div class="cl">Conexão WooCommerce</div>
+    <div class="notice ni"><i class="ti ti-info-circle"></i><span>Gere chave somente-leitura em <strong>WooCommerce › Configurações › Avançado › REST API</strong>. Sem credenciais, carrega pedido #19440 demo.</span></div>
+    <div class="g2" style="margin-bottom:10px">
+      <div class="fg s2"><label>URL da loja</label><input type="url" id="woo-url" placeholder="https://expressgamesdigitais.com.br"/></div>
+      <div class="fg"><label>Consumer key</label><input type="text" id="woo-ck" placeholder="ck_xxxxxxxxxxxx"/></div>
+      <div class="fg"><label>Consumer secret</label><input type="password" id="woo-cs" placeholder="cs_xxxxxxxxxxxx"/></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn" id="btn-test"><i class="ti ti-plug"></i> Testar conexão</button>
+      <span id="woo-status" style="font-size:13px;display:none;font-weight:700"></span>
+    </div>
+  </div>
+  <div class="card"><div class="cl">Chave de API — Anthropic (Claude)</div>
+    <div class="notice nw"><i class="ti ti-alert-triangle"></i><span>Necessária para gerar rascunhos. Crie em <strong>console.anthropic.com</strong> › API Keys.</span></div>
+    <div class="fg"><label>Anthropic API Key</label><input type="password" id="anthropic-key" placeholder="sk-ant-api03-..."/></div>
+  </div>
+  <div class="card"><div class="cl">Identidade da loja</div>
+    <div class="g2">
+      <div class="fg"><label>Nome da loja</label><input type="text" id="store-name" value="Express Games Digitais"/></div>
+      <div class="fg"><label>WhatsApp (opcional)</label><input type="text" id="store-wpp" placeholder="(64) 99999-9999"/></div>
+    </div>
+  </div>
+  <div class="card"><div class="cl">Dados salvos</div>
+    <p style="font-size:13px;color:var(--tx2);margin-bottom:12px;line-height:1.6">Configurações e tutoriais salvos automaticamente no navegador (localStorage).</p>
+    <button class="btn btn-red" id="btn-clear"><i class="ti ti-trash"></i> Apagar todos os dados salvos</button>
+  </div>
+</div>
+<div class="mpanel" id="panel-tutoriais">
+  <div class="card"><div class="cl">Tutoriais por tipo de licença</div>
+    <div class="notice nw"><i class="ti ti-alert-triangle"></i><span>Preencha os 4 tipos e clique <strong>Salvar</strong> em cada um.</span></div>
+    <div class="ttabs">
+      <button class="ttab active" id="ttab-prima-ps5"><span class="tdot"></span>Primária PS5</button>
+      <button class="ttab" id="ttab-prima-ps4"><span class="tdot"></span>Primária PS4</button>
+      <button class="ttab" id="ttab-secun-ps5"><span class="tdot"></span>Secundária PS5</button>
+      <button class="ttab" id="ttab-secun-ps4"><span class="tdot"></span>Secundária PS4</button>
+    </div>
+    <div class="tpanel active" id="tpanel-prima-ps5">
+      <div class="tfield"><label>Alerta (3× no email)</label><input type="text" id="alert-prima-ps5"/></div>
+      <div class="tfield"><label>Instruções completas</label><textarea id="text-prima-ps5" rows="9"></textarea></div>
+      <div class="tfield"><label>Link YouTube</label><input type="url" id="link-prima-ps5"/></div>
+      <div class="btn-row"><button class="btn btn-green" id="save-prima-ps5"><i class="ti ti-device-floppy"></i> Salvar Primária PS5</button><span class="toast" id="toast-prima-ps5"><i class="ti ti-check"></i> Salvo!</span></div>
+    </div>
+    <div class="tpanel" id="tpanel-prima-ps4">
+      <div class="tfield"><label>Alerta</label><input type="text" id="alert-prima-ps4"/></div>
+      <div class="tfield"><label>Instruções completas</label><textarea id="text-prima-ps4" rows="9"></textarea></div>
+      <div class="tfield"><label>Link YouTube</label><input type="url" id="link-prima-ps4"/></div>
+      <div class="btn-row"><button class="btn btn-green" id="save-prima-ps4"><i class="ti ti-device-floppy"></i> Salvar Primária PS4</button><span class="toast" id="toast-prima-ps4"><i class="ti ti-check"></i> Salvo!</span></div>
+    </div>
+    <div class="tpanel" id="tpanel-secun-ps5">
+      <div class="tfield"><label>Alerta</label><input type="text" id="alert-secun-ps5"/></div>
+      <div class="tfield"><label>Instruções completas</label><textarea id="text-secun-ps5" rows="9"></textarea></div>
+      <div class="tfield"><label>Link YouTube</label><input type="url" id="link-secun-ps5"/></div>
+      <div class="btn-row"><button class="btn btn-green" id="save-secun-ps5"><i class="ti ti-device-floppy"></i> Salvar Secundária PS5</button><span class="toast" id="toast-secun-ps5"><i class="ti ti-check"></i> Salvo!</span></div>
+    </div>
+    <div class="tpanel" id="tpanel-secun-ps4">
+      <div class="tfield"><label>Alerta</label><input type="text" id="alert-secun-ps4"/></div>
+      <div class="tfield"><label>Instruções completas</label><textarea id="text-secun-ps4" rows="9"></textarea></div>
+      <div class="tfield"><label>Link YouTube</label><input type="url" id="link-secun-ps4"/></div>
+      <div class="btn-row"><button class="btn btn-green" id="save-secun-ps4"><i class="ti ti-device-floppy"></i> Salvar Secundária PS4</button><span class="toast" id="toast-secun-ps4"><i class="ti ti-check"></i> Salvo!</span></div>
+    </div>
+  </div>
+</div>
+<div class="mpanel" id="panel-pedido">
+  <div class="card"><div class="cl">Buscar pedido</div>
+    <div class="notice ni"><i class="ti ti-info-circle"></i><span>Console detectado pelo campo "Console" do checkout e pelo nome do produto. Sem credenciais, carrega pedido #19440 demo.</span></div>
+    <div style="display:flex;gap:8px">
+      <input type="text" id="order-id" placeholder="Número do pedido (ex: 19440)" style="flex:1"/>
+      <button class="btn" id="btn-fetch"><i class="ti ti-download"></i> Buscar</button>
+    </div>
+    <div class="order-box" id="order-box" style="display:none">
+      <div class="order-head"><span class="order-title" id="op-title">—</span>
+        <div class="order-badges"><span class="badge" id="op-status">—</span><span class="badge b-info" id="op-console" style="display:none"></span><span class="badge b-ok" id="op-lic" style="display:none"></span></div>
+      </div>
+      <div class="order-body">
+        <div class="orow"><span class="ok">Cliente</span><span class="ov" id="op-name">—</span></div>
+        <div class="orow"><span class="ok">Email</span><span class="ov" id="op-email">—</span></div>
+        <div class="orow"><span class="ok">Console (checkout)</span><span class="ov" id="op-cons">—</span></div>
+        <div class="orow"><span class="ok">Tutorial detectado</span><span class="ov" id="op-tut" style="color:var(--itx)">—</span></div>
+        <div class="orow"><span class="ok">Data</span><span class="ov" id="op-date">—</span></div>
+        <div class="orow"><span class="ok">Total</span><span class="ov" id="op-total">—</span></div>
+      </div>
+    </div>
+  </div>
+  <div id="item-section" style="display:none">
+    <div class="card"><div class="cl">Item — revise se necessário</div>
+      <div id="item-list"></div>
+      <div class="tut-prev" id="tut-prev"><div class="tut-prev-title">Preview do tutorial</div><div id="tut-prev-text" style="white-space:pre-wrap;font-size:12.5px;line-height:1.6;color:var(--tx)"></div></div>
+    </div>
+    <div class="card"><div class="cl">Observações (opcional)</div><textarea id="obs" rows="2" placeholder="Ex: urgência, cliente com dificuldade..."></textarea></div>
+    <button class="btn btn-primary" id="btn-run"><i class="ti ti-robot"></i> Gerar rascunho de email</button>
+    <div class="prog" id="prog"><div class="prog-bar"></div></div>
+    <div class="thinking" id="thinking"><i class="ti ti-brain"></i> Gerando rascunho<div class="dots"><span></span><span></span><span></span></div></div>
+  </div>
+</div>
+<div class="mpanel" id="panel-rascunho">
+  <div class="empty" id="draft-empty"><i class="ti ti-mail-off"></i>Nenhum rascunho ainda.<br>Processe um pedido na aba <strong>Pedido</strong>.</div>
+  <div id="draft-content" style="display:none">
+    <div class="notice ns"><i class="ti ti-check"></i><span>Rascunho pronto. Preencha os campos <strong>[ PREENCHER ]</strong> antes de enviar.</span></div>
+    <div class="copy-bar">
+      <button class="btn" id="btn-copy-subj"><i class="ti ti-copy"></i> Copiar assunto</button>
+      <button class="btn" id="btn-copy-body"><i class="ti ti-copy"></i> Copiar corpo</button>
+      <button class="btn" id="btn-gmail"><i class="ti ti-brand-gmail"></i> Abrir no Gmail</button>
+    </div>
+    <div class="email-wrap">
+      <div class="email-head">
+        <div class="ehead-row"><span class="elbl">Para:</span><span class="eval" id="d-to">—</span></div>
+        <div class="ehead-row"><span class="elbl">Assunto:</span><span class="eval" id="d-subj">—</span></div>
+      </div>
+      <div class="email-body" id="d-body"></div>
+    </div>
+  </div>
+</div>
+<div class="mpanel" id="panel-historico">
+  <div class="metrics">
+    <div class="metric"><div class="metric-lbl">Total</div><div class="metric-val" id="m-total">0</div></div>
+    <div class="metric"><div class="metric-lbl">Primária PS5</div><div class="metric-val" id="m-pp5">0</div></div>
+    <div class="metric"><div class="metric-lbl">Primária PS4</div><div class="metric-val" id="m-pp4">0</div></div>
+    <div class="metric"><div class="metric-lbl">Secundária</div><div class="metric-val" id="m-sec">0</div></div>
+  </div>
+  <div class="hlist" id="hlist"><div class="empty"><i class="ti ti-inbox"></i>Nenhum pedido processado nesta sessão.</div></div>
+</div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK='eg_v4';
+var curOrder=null,curItem=null,curTutKey=null,sessionHist=[],draftData=null;
+var TUT_KEYS=['prima-ps5','prima-ps4','secun-ps5','secun-ps4'];
+var TUT_LABELS={'prima-ps5':'Primária PS5','prima-ps4':'Primária PS4','secun-ps5':'Secundária PS5','secun-ps4':'Secundária PS4'};
+function g(id){return document.getElementById(id);}
+function showMainTab(name){document.querySelectorAll('.mtab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.mpanel').forEach(function(p){p.classList.remove('active');});var tab=g('mtab-'+name);var panel=g('panel-'+name);if(tab)tab.classList.add('active');if(panel)panel.classList.add('active');}
+['config','tutoriais','pedido','rascunho','historico'].forEach(function(name){var btn=g('mtab-'+name);if(btn)btn.addEventListener('click',function(){showMainTab(name);});});
+function showTutTab(key){document.querySelectorAll('.ttab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.tpanel').forEach(function(p){p.classList.remove('active');});var tab=g('ttab-'+key);var panel=g('tpanel-'+key);if(tab)tab.classList.add('active');if(panel)panel.classList.add('active');updateTutPreview(key);}
+TUT_KEYS.forEach(function(key){var btn=g('ttab-'+key);if(btn)btn.addEventListener('click',function(){showTutTab(key);});});
+TUT_KEYS.forEach(function(key){var btn=g('save-'+key);if(btn)btn.addEventListener('click',function(){saveTut(key);});});
+['woo-url','woo-ck','woo-cs','store-name','store-wpp','anthropic-key'].forEach(function(id){var el=g(id);if(el)el.addEventListener('input',function(){saveAll();setSI('Salvo ✓');});});
+g('btn-test').addEventListener('click',testWoo);g('btn-fetch').addEventListener('click',fetchOrder);g('btn-run').addEventListener('click',runAgent);g('btn-clear').addEventListener('click',clearAll);g('btn-copy-subj').addEventListener('click',copySubject);g('btn-copy-body').addEventListener('click',copyBody);g('btn-gmail').addEventListener('click',openGmail);
+g('order-id').addEventListener('keydown',function(e){if(e.key==='Enter')fetchOrder();});
+function saveAll(){try{var d={cfg:{url:g('woo-url').value,ck:g('woo-ck').value,cs:g('woo-cs').value,name:g('store-name').value,wpp:g('store-wpp').value,apiKey:g('anthropic-key').value}};TUT_KEYS.forEach(function(k){d[k]={alert:g('alert-'+k).value,text:g('text-'+k).value,link:g('link-'+k).value};});localStorage.setItem(SK,JSON.stringify(d));}catch(e){}}
+function loadAll(){try{var raw=localStorage.getItem(SK);if(!raw){setSI('Pronto');return;}var d=JSON.parse(raw);if(d.cfg){if(d.cfg.url)g('woo-url').value=d.cfg.url;if(d.cfg.ck)g('woo-ck').value=d.cfg.ck;if(d.cfg.cs)g('woo-cs').value=d.cfg.cs;if(d.cfg.name)g('store-name').value=d.cfg.name;if(d.cfg.wpp)g('store-wpp').value=d.cfg.wpp;if(d.cfg.apiKey)g('anthropic-key').value=d.cfg.apiKey;}TUT_KEYS.forEach(function(k){if(!d[k])return;if(d[k].alert)g('alert-'+k).value=d[k].alert;if(d[k].text)g('text-'+k).value=d[k].text;if(d[k].link)g('link-'+k).value=d[k].link;updateDot(k);});setSI('Restaurado ✓');setTimeout(function(){setSI('Salvo ✓');},2000);}catch(e){setSI('Pronto');}}
+function setSI(t){var el=g('si');if(el)el.textContent=t;}
+function saveTut(key){saveAll();updateDot(key);var t=g('toast-'+key);if(t){t.style.display='inline-flex';setTimeout(function(){t.style.display='none';},2500);}setSI('Salvo ✓');if(curTutKey===key)updateTutPreview(key);}
+function updateDot(key){var tab=g('ttab-'+key);var txt=g('text-'+key);if(!tab||!txt)return;if(txt.value.trim()){tab.classList.add('filled');}else{tab.classList.remove('filled');}}
+function clearAll(){if(!confirm('Apagar todos os dados salvos?'))return;localStorage.removeItem(SK);location.reload();}
+function getTutKey(cons,lic){var c=(cons||'').toLowerCase();var l=(lic||'').toLowerCase();var ps5=c.indexOf('ps5')>=0||c.indexOf('playstation 5')>=0;var ps4=c.indexOf('ps4')>=0||c.indexOf('playstation 4')>=0;var prim=l.indexOf('prim')>=0;var sec=l.indexOf('secun')>=0||l.indexOf('secondary')>=0;if(prim&&ps5)return 'prima-ps5';if(prim&&ps4)return 'prima-ps4';if(sec&&ps5)return 'secun-ps5';if(sec&&ps4)return 'secun-ps4';return prim?'prima-ps5':'secun-ps5';}
+function getTutData(key){return{alert:(g('alert-'+key)||{value:''}).value.trim(),text:(g('text-'+key)||{value:''}).value.trim(),link:(g('link-'+key)||{value:''}).value.trim()};}
+function parseConsoleName(name){var n=(name||'').toUpperCase();if((n.indexOf('PS5')>=0&&n.indexOf('PS4')>=0)||n.indexOf('PS4/PS5')>=0)return 'PS5';if(n.indexOf('PS5')>=0)return 'PS5';if(n.indexOf('PS4')>=0)return 'PS4';return '';}
+function parseConsoleMeta(order){var meta=order.meta_data||[];var found=null;for(var i=0;i<meta.length;i++){var k=(meta[i].key||'').toLowerCase();if(k==='billing_console'||k==='console'||k.indexOf('console')>=0){found=meta[i];break;}}if(!found)return '';var v=(found.value||'').toLowerCase();if(v.indexOf('ps5')>=0||v.indexOf('playstation 5')>=0)return 'PS5';if(v.indexOf('ps4')>=0||v.indexOf('playstation 4')>=0)return 'PS4';return found.value;}
+function parseLicense(name){var n=(name||'').toLowerCase();if(n.indexOf('secund')>=0)return 'Secundária';return 'Primária';}
+function gameNameFrom(name){return(name||'').split('-')[0].trim();}
+function statusBadge(s){var map={processing:['Processando','b-warn'],completed:['Concluído','b-ok'],pending:['Pendente','b-info'],cancelled:['Cancelado','b-danger'],'on-hold':['Em espera','b-warn']};return map[s]||[s,'b-gray'];}
+function mockOrder(id){return{id:parseInt(id)||19440,number:id||'19440',status:'processing',date_created:'2026-05-17T15:16:00',total:'89.90',billing:{first_name:'Jeová',last_name:'Carlos',email:'jeovarx0@gmail.com'},meta_data:[{key:'billing_console',value:'playstation 5'}],line_items:[{name:'KENA BRIDGE OF SPIRITS - PS4/PS5 - DIGITAL - Primária',quantity:1,total:'89.90',meta_data:[{key:'Licenças',value:'Primária'}]}]};}
+function testWoo(){var url=g('woo-url').value.trim();var ck=g('woo-ck').value.trim();var cs=g('woo-cs').value.trim();if(!url||!ck||!cs){alert('Preencha URL, Consumer Key e Consumer Secret.');return;}var btn=g('btn-test'),st=g('woo-status');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> Testando...';st.style.display='none';fetch(url.replace(//$/,'')+'/wp-json/wc/v3/system_status',{headers:{Authorization:'Basic '+btoa(ck+':'+cs)}}).then(function(r){st.style.display='block';if(r.ok){st.style.color='var(--stx)';st.textContent='✓ Conexão bem-sucedida!';}else{st.style.color='var(--dtx)';st.textContent='✗ Erro '+r.status;}}).catch(function(){st.style.display='block';st.style.color='var(--dtx)';st.textContent='✗ Não conectou.';}).finally(function(){btn.disabled=false;btn.innerHTML='<i class="ti ti-plug"></i> Testar conexão';});}
+function fetchOrder(){var id=g('order-id').value.trim();if(!id){alert('Informe o número do pedido.');return;}var url=g('woo-url').value.trim();var ck=g('woo-ck').value.trim();var cs=g('woo-cs').value.trim();var btn=g('btn-fetch');btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> Buscando...';var doRender=function(o){renderOrder(o);btn.disabled=false;btn.innerHTML='<i class="ti ti-download"></i> Buscar';};if(!ck||!cs){doRender(mockOrder(id));return;}fetch(url.replace(//$/,'')+'/wp-json/wc/v3/orders/'+id,{headers:{Authorization:'Basic '+btoa(ck+':'+cs)}}).then(function(r){if(!r.ok)throw new Error('Pedido não encontrado ('+r.status+')');return r.json();}).then(function(o){doRender(o);}).catch(function(e){alert('Erro: '+e.message+'\n\nCarregando demonstração...');doRender(mockOrder(id));});}
+function renderOrder(o){curOrder=o;var it=o.line_items[0];var clientName=((o.billing.first_name||'')+' '+(o.billing.last_name||'')).trim();var consoleMeta=parseConsoleMeta(o);var consoleProduct=parseConsoleName(it.name);var cons=consoleProduct||consoleMeta||'PS5';var licMeta=null;(it.meta_data||[]).forEach(function(m){if(m.key==='Licenças'||(m.key||'').toLowerCase().indexOf('licen')>=0)licMeta=m;});var lic=licMeta?licMeta.value:parseLicense(it.name);curTutKey=getTutKey(cons,lic);curItem={fullName:it.name,gameName:gameNameFrom(it.name),license:lic,console:cons,tutKey:curTutKey};var sb=statusBadge(o.status);var dt=o.date_created?new Date(o.date_created).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';var total=o.total?'R$ '+parseFloat(o.total).toFixed(2).replace('.',','):'—';g('op-title').textContent='Pedido #'+(o.number||o.id);var opSt=g('op-status');opSt.textContent=sb[0];opSt.className='badge '+sb[1];g('op-name').textContent=clientName;g('op-email').textContent=o.billing.email||'—';g('op-cons').textContent=consoleMeta?consoleMeta+' (checkout)':'Não informado — detectado: '+cons;g('op-tut').textContent=TUT_LABELS[curTutKey];g('op-date').textContent=dt;g('op-total').textContent=total;var opC=g('op-console');opC.textContent=cons;opC.style.display='inline-block';var opL=g('op-lic');opL.textContent=lic;opL.style.display='inline-block';g('order-box').style.display='block';renderItem();g('item-section').style.display='block';updateTutPreview(curTutKey);}
+function renderItem(){var it=curItem;var consOpts=['PS5','PS4'].map(function(c){return '<option value="'+c+'"'+(c===it.console?' selected':'')+'>'+c+'</option>';}).join('');var licOpts=['Primária','Secundária'].map(function(l){return '<option value="'+l+'"'+(l===it.license?' selected':'')+'>'+l+'</option>';}).join('');g('item-list').innerHTML='<div class="icard"><div class="iname">'+it.fullName+'</div><div class="ibadges"><span class="badge b-info">'+it.console+'</span><span class="badge b-ok">'+it.license+'</span></div><div class="imeta"><div class="fg"><label>Console</label><select id="sel-c">'+consOpts+'</select></div><div class="fg"><label>Licença</label><select id="sel-l">'+licOpts+'</select></div><div class="fg"><label>Tutorial</label><input class="readonly" type="text" id="tut-det" readonly value="'+TUT_LABELS[it.tutKey]+'"/></div></div></div>';g('sel-c').addEventListener('change',onItemChange);g('sel-l').addEventListener('change',onItemChange);}
+function onItemChange(){var c=g('sel-c').value;var l=g('sel-l').value;curItem.console=c;curItem.license=l;var k=getTutKey(c,l);curItem.tutKey=k;curTutKey=k;g('tut-det').value=TUT_LABELS[k];g('op-tut').textContent=TUT_LABELS[k];updateTutPreview(k);}
+function updateTutPreview(key){var d=getTutData(key);var box=g('tut-prev'),txt=g('tut-prev-text');if(d.text||d.link){box.classList.add('show');txt.textContent=(d.text||'(sem texto)')+( d.link?'\n\nLink: '+d.link:'');}else{box.classList.remove('show');txt.textContent='';}}
+function runAgent(){if(!curOrder||!curItem){alert('Busque um pedido primeiro.');return;}var apiKey=g('anthropic-key').value.trim();if(!apiKey){alert('Configure sua Anthropic API Key na aba Config primeiro.');return;}var btn=g('btn-run'),prog=g('prog'),think=g('thinking');btn.disabled=true;prog.classList.add('show');think.classList.add('show');var storeName=g('store-name').value||'Express Games Digitais';var wpp=g('store-wpp').value||'';var clientName=((curOrder.billing.first_name||'')+' '+(curOrder.billing.last_name||'')).trim();var email=curOrder.billing.email;var num=curOrder.number||curOrder.id;var obs=g('obs').value.trim();var tut=getTutData(curTutKey);var gameName=curItem.gameName;var cons=curItem.console;var lic=curItem.license;var subj='Pedido #'+num+' '+gameName+' - '+cons+' - DIGITAL - '+lic;var sys='Você é agente de fulfillment da loja "'+storeName+'" de jogos digitais PlayStation.\nEscreva APENAS:\n1. Saudação calorosa de 1-2 linhas pelo nome do cliente\n2. Encerramento de 2-3 linhas confirmando licença '+lic+' e suporte disponível\nNÃO invente tutoriais, credenciais ou alertas. Tom amigável, português brasileiro.\nFormato:\n[SAUDACAO]texto[/SAUDACAO]\n[ENCERRAMENTO]texto[/ENCERRAMENTO]';var usr='Cliente: '+clientName+' | Pedido: #'+num+' | Jogo: '+gameName+' | Console: '+cons+' | Licença: '+lic+(obs?' | Obs: '+obs:'');fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]})}).then(function(r){return r.json();}).then(function(data){var text=(data.content||[]).map(function(c){return c.text||'';}).join('');var sm=text.match(/[SAUDACAO]([sS]*?)[/SAUDACAO]/);var em=text.match(/[ENCERRAMENTO]([sS]*?)[/ENCERRAMENTO]/);var saudacao=sm?sm[1].trim():'Olá, '+clientName+'! Seu pedido foi confirmado.';var encerramento=em?em[1].trim():'Qualquer dúvida estamos à disposição!';draftData={to:email,subj:subj,clientName:clientName,gameName:gameName,console:cons,license:lic,tutKey:curTutKey,tut:tut,saudacao:saudacao,encerramento:encerramento,storeName:storeName,wpp:wpp,num:num};renderDraft(draftData);sessionHist.unshift({name:clientName,order:'#'+num,game:gameName,license:lic,tutKey:curTutKey,time:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});updateHist();showMainTab('rascunho');}).catch(function(e){alert('Erro ao chamar a API: '+e.message+'\n\nVerifique sua API Key e a conexão com a internet.');}).finally(function(){btn.disabled=false;prog.classList.remove('show');think.classList.remove('show');});}
+function renderDraft(d){g('d-to').textContent=d.to;g('d-subj').textContent=d.subj;var linkHtml=d.tut.link?'<a class="yt-link" href="'+d.tut.link+'" target="_blank"><i class="ti ti-brand-youtube" style="font-size:20px"></i>Vídeo tutorial — '+TUT_LABELS[d.tutKey]+' — clique para assistir</a>':'';var textHtml=d.tut.text?'<div class="sec-title">Instruções de ativação</div><div class="tut-block">'+d.tut.text+'</div>':'<p style="color:var(--tx2);font-style:italic;font-size:13px;padding:8px 0">Nenhum tutorial cadastrado. Adicione na aba Tutoriais.</p>';var alertHtml=d.tut.alert?'<div class="alert-box"><i class="ti ti-alert-triangle" style="font-size:14px;margin-right:6px"></i>'+d.tut.alert+'<br>'+d.tut.alert+'<br>'+d.tut.alert+'</div>':'';var wppLine=d.wpp?'<br>WhatsApp: '+d.wpp:'';g('d-body').innerHTML='<p style="margin-bottom:14px">'+d.saudacao+'</p><div class="cred-box"><div class="cred-head"><i class="ti ti-key" style="font-size:13px"></i>&nbsp;Dados de acesso — preencha antes de enviar</div><div class="cred-row"><span class="cred-lbl">Email</span><span class="cred-val">[ PREENCHER ]</span></div><div class="cred-row"><span class="cred-lbl">Senha</span><span class="cred-val">[ PREENCHER ]</span></div><div class="cred-row"><span class="cred-lbl">Código</span><span class="cred-val">[ PREENCHER ]</span></div></div>'+alertHtml+linkHtml+textHtml+'<p style="margin-top:14px">'+d.encerramento+'</p><div class="email-footer">Equipe '+d.storeName+wppLine+'<br>Pedido: #'+d.num+'</div>';g('draft-empty').style.display='none';g('draft-content').style.display='block';}
+function buildPlainText(d){var lines=[d.saudacao,'','--- DADOS DE ACESSO ---','Email: [ PREENCHER ]','Senha: [ PREENCHER ]','Código: [ PREENCHER ]',''];if(d.tut.alert){lines.push('⚠️ '+d.tut.alert);lines.push('⚠️ '+d.tut.alert);lines.push('⚠️ '+d.tut.alert);lines.push('');}if(d.tut.link){lines.push('VÍDEO TUTORIAL ('+TUT_LABELS[d.tutKey]+'): '+d.tut.link);lines.push('');}if(d.tut.text){lines.push('INSTRUÇÕES DE ATIVAÇÃO:');lines.push(d.tut.text);lines.push('');}lines.push(d.encerramento);lines.push('');lines.push('Equipe '+d.storeName);if(d.wpp)lines.push('WhatsApp: '+d.wpp);lines.push('Pedido: #'+d.num);return lines.join('\n');}
+function copySubject(){if(!draftData)return;navigator.clipboard.writeText(draftData.subj).then(function(){alert('Assunto copiado!');});}
+function copyBody(){if(!draftData)return;navigator.clipboard.writeText(buildPlainText(draftData)).then(function(){alert('Corpo copiado!');});}
+function openGmail(){if(!draftData)return;var url='https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(draftData.to)+'&su='+encodeURIComponent(draftData.subj)+'&body='+encodeURIComponent(buildPlainText(draftData));window.open(url,'_blank');}
+function updateHist(){g('m-total').textContent=sessionHist.length;g('m-pp5').textContent=sessionHist.filter(function(h){return h.tutKey==='prima-ps5';}).length;g('m-pp4').textContent=sessionHist.filter(function(h){return h.tutKey==='prima-ps4';}).length;g('m-sec').textContent=sessionHist.filter(function(h){return h.tutKey.indexOf('secun')>=0;}).length;var list=g('hlist');if(!sessionHist.length){list.innerHTML='<div class="empty"><i class="ti ti-inbox"></i>Nenhum pedido processado nesta sessão.</div>';return;}list.innerHTML=sessionHist.map(function(h){return '<div class="hitem"><span class="badge b-ok">Rascunho</span><div class="hinfo"><div class="hname">'+h.name+' · '+h.order+'</div><div class="hdetail">'+h.game+' · '+TUT_LABELS[h.tutKey]+'</div></div><div class="htime">'+h.time+'</div></div>';}).join('');}
+loadAll();
+})();
+</script>
+</body>
+</html>
