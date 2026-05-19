@@ -2,37 +2,37 @@
 const processed = {};
 
 var TL = {
-  "prima-ps5": "PrimÃ¡ria PS5",
-  "prima-ps4": "PrimÃ¡ria PS4",
-  "secun-ps5": "SecundÃ¡ria PS5",
-  "secun-ps4": "SecundÃ¡ria PS4"
+  "prima-ps5": "PrimÃÂ¡ria PS5",
+  "prima-ps4": "PrimÃÂ¡ria PS4",
+  "secun-ps5": "SecundÃÂ¡ria PS5",
+  "secun-ps4": "SecundÃÂ¡ria PS4"
 };
 
-var ALT = "ATENÃÃO - NÃO CRIAR O USUÃRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE";
+var ALT = "ATENÃÂÃÂO - NÃÂO CRIAR O USUÃÂRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃÂO MANUALMENTE";
 
 var TP5 = [
-  "ParabÃ©ns! VocÃª adquiriu a sua licenÃ§a PRIMÃRIA que te dÃ¡ direito a usar esta conta em 1 VÃDEO GAME!",
+  "ParabÃÂ©ns! VocÃÂª adquiriu a sua licenÃÂ§a PRIMÃÂRIA que te dÃÂ¡ direito a usar esta conta em 1 VÃÂDEO GAME!",
   "",
-  "TERMOS DE GARANTIA E ORIENTAÃÃES",
+  "TERMOS DE GARANTIA E ORIENTAÃÂÃÂES",
   "",
   "1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).",
-  "2 - NÃ£o Ã© permitido RETIRAR verificaÃ§Ã£o de duas etapas da conta.",
-  "3 - O cliente que desobedecer aos itens 1 e 2, irÃ¡ perder a conta sem direito de devoluÃ§Ã£o.",
-  "4 - A conta nÃ£o deve ser compartilhada, sob pena de perda de garantia e acesso.",
-  "5 - Em caso de versÃ£o errada, jogos errados ou coisa do tipo, nos avise em atÃ© 7 dias, em respeito ao prazo legal.",
-  "6 - UsuÃ¡rio primÃ¡rio nÃ£o pode ficar acessando a conta criada, evitar ao mÃ¡ximo entrar nela, e sempre jogar nos demais usuÃ¡rios presentes no PS5.",
-  "7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e nÃ£o daremos mais suporte.",
-  "8 - Se excluir a conta do game, ele nÃ£o abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.",
+  "2 - NÃÂ£o ÃÂ© permitido RETIRAR verificaÃÂ§ÃÂ£o de duas etapas da conta.",
+  "3 - O cliente que desobedecer aos itens 1 e 2, irÃÂ¡ perder a conta sem direito de devoluÃÂ§ÃÂ£o.",
+  "4 - A conta nÃÂ£o deve ser compartilhada, sob pena de perda de garantia e acesso.",
+  "5 - Em caso de versÃÂ£o errada, jogos errados ou coisa do tipo, nos avise em atÃÂ© 7 dias, em respeito ao prazo legal.",
+  "6 - UsuÃÂ¡rio primÃÂ¡rio nÃÂ£o pode ficar acessando a conta criada, evitar ao mÃÂ¡ximo entrar nela, e sempre jogar nos demais usuÃÂ¡rios presentes no PS5.",
+  "7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e nÃÂ£o daremos mais suporte.",
+  "8 - Se excluir a conta do game, ele nÃÂ£o abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.",
   "9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.",
-  "10 - Em caso de formataÃ§Ã£o do seu PS5, pedimos que grave um vÃ­deo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.",
-  "11 - Em caso de troca de console, pedimos que grave um vÃ­deo excluindo nossa conta antes.",
-  "12 - O acesso Ã© vitalicio, se a conta permanecer no seu console original de primeira compra.",
+  "10 - Em caso de formataÃÂ§ÃÂ£o do seu PS5, pedimos que grave um vÃÂ­deo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.",
+  "11 - Em caso de troca de console, pedimos que grave um vÃÂ­deo excluindo nossa conta antes.",
+  "12 - O acesso ÃÂ© vitalicio, se a conta permanecer no seu console original de primeira compra.",
   "13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922."
 ].join("\n");
 
 var TP4 = TP5.replace(/PS5/g, "PS4");
-var TS5 = TP5.replace("PRIMÃRIA", "SECUNDÃRIA").replace("UsuÃ¡rio primÃ¡rio", "UsuÃ¡rio secundÃ¡rio");
-var TS4 = TP4.replace("PRIMÃRIA", "SECUNDÃRIA").replace("UsuÃ¡rio primÃ¡rio", "UsuÃ¡rio secundÃ¡rio");
+var TS5 = TP5.replace("PRIMÃÂRIA", "SECUNDÃÂRIA").replace("UsuÃÂ¡rio primÃÂ¡rio", "UsuÃÂ¡rio secundÃÂ¡rio");
+var TS4 = TP4.replace("PRIMÃÂRIA", "SECUNDÃÂRIA").replace("UsuÃÂ¡rio primÃÂ¡rio", "UsuÃÂ¡rio secundÃÂ¡rio");
 
 var TUTS = {
   "prima-ps5": { text: TP5, link: "https://www.youtube.com/watch?v=ZnrUUgHKYKA" },
@@ -77,7 +77,7 @@ function pConsMeta(order) {
 }
 
 function pLic(name) {
-  return (name || "").toLowerCase().includes("secund") ? "SecundÃ¡ria" : "PrimÃ¡ria";
+  return (name || "").toLowerCase().includes("secund") ? "SecundÃÂ¡ria" : "PrimÃÂ¡ria";
 }
 
 function pGame(name) {
@@ -128,14 +128,14 @@ async function sendDraft(tok, to, subj, html) {
 async function makeDraft(tok, item, order, cn, num, sn, wpp, cm) {
   var cons = cm || pCons(item.name) || "PS5";
   var lm = (item.meta_data || []).find(function(m) {
-    return m.key === "LicenÃ§as" || m.key === "pa_licencas" || (m.key || "").toLowerCase().includes("licen");
+    return m.key === "LicenÃÂ§as" || m.key === "pa_licencas" || (m.key || "").toLowerCase().includes("licen");
   });
   var licRaw = lm ? (lm.display_value || lm.value || "") : "";
   var lic;
   if (licRaw) {
     var licL = licRaw.toLowerCase();
-    if (licL.includes("secund")) lic = "SecundÃ¡ria";
-    else if (licL.includes("prim")) lic = "PrimÃ¡ria";
+    if (licL.includes("secund")) lic = "SecundÃÂ¡ria";
+    else if (licL.includes("prim")) lic = "PrimÃÂ¡ria";
     else lic = licRaw;
   } else {
     lic = pLic(item.name);
@@ -150,28 +150,28 @@ async function makeDraft(tok, item, order, cn, num, sn, wpp, cm) {
     headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01", "x-api-key": process.env.ANTHROPIC_API_KEY },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514", max_tokens: 300,
-      system: "Agente da loja " + sn + ". Escreva: [S]saudaÃ§Ã£o 1 linha[/S][E]encerramento 1 linha[/E]",
+      system: "Agente da loja " + sn + ". Escreva: [S]saudaÃÂ§ÃÂ£o 1 linha[/S][E]encerramento 1 linha[/E]",
       messages: [{ role: "user", content: cn + " | #" + num + " | " + gn + " | " + cons + " | " + lic }]
     })
   });
   var ct = ((await cr.json()).content || []).map(function(c) { return c.text || ""; }).join("");
   var sm = ct.match(/\[S\]([\s\S]*?)\[\/S\]/);
   var em = ct.match(/\[E\]([\s\S]*?)\[\/E\]/);
-  var sau = sm ? sm[1].trim() : "OlÃ¡, " + cn + "!";
-  var enc = em ? em[1].trim() : "Qualquer dÃºvida estamos Ã  disposiÃ§Ã£o!";
+  var sau = sm ? sm[1].trim() : "OlÃÂ¡, " + cn + "!";
+  var enc = em ? em[1].trim() : "Qualquer dÃÂºvida estamos ÃÂ  disposiÃÂ§ÃÂ£o!";
   var wl = wpp ? "WhatsApp: " + wpp + "<br>" : "";
   var arow = '<p style="color:red;font-weight:bold;margin:6px 0">' + ALT + '</p>';
   arow = arow + arow + arow;
   var tlink = tut.link
-    ? '<p><strong>VÃDEO DE TUTORIAL (' + TL[tk] + '): </strong><a href="' + tut.link + '">' + tut.link + '</a></p>'
+    ? '<p><strong>VÃÂDEO DE TUTORIAL (' + TL[tk] + '): </strong><a href="' + tut.link + '">' + tut.link + '</a></p>'
     : "";
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#222">'
     + '<p>' + sau + '</p>'
     + '<table style="border:1px solid #ccc;border-collapse:collapse;margin:14px 0">'
-    + '<tr style="background:#f5f5f5"><td colspan="2" style="padding:8px 12px;font-weight:bold;border:1px solid #ccc">DADOS DE CRIAÃÃO DA CONTA</td></tr>'
+    + '<tr style="background:#f5f5f5"><td colspan="2" style="padding:8px 12px;font-weight:bold;border:1px solid #ccc">DADOS DE CRIAÃÂÃÂO DA CONTA</td></tr>'
     + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Email</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1;min-width:180px"></td></tr>'
     + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Senha</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
-    + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">CÃ³digo</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
+    + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">CÃÂ³digo</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
     + '</table>'
     + arow + tlink
     + '<p>' + nl2br(tut.text) + '</p>'
@@ -189,7 +189,7 @@ exports.handler = async function(event) {
   try {
     var body = event.isBase64Encoded ? Buffer.from(event.body, "base64").toString("utf8") : event.body;
     var order = JSON.parse(body);
-    if (!["processing", "completed"].includes(order.status)) return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
+    if (order.status !== "processing") return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
 
     var num = order.number || order.id;
     const key = "order-" + num;
