@@ -2,37 +2,37 @@
 const processed = {};
 
 var TL = {
-  "prima-ps5": "PrimÃ¡ria PS5",
-  "prima-ps4": "PrimÃ¡ria PS4",
-  "secun-ps5": "SecundÃ¡ria PS5",
-  "secun-ps4": "SecundÃ¡ria PS4"
+  "prima-ps5": "Primária PS5",
+  "prima-ps4": "Primária PS4",
+  "secun-ps5": "Secundária PS5",
+  "secun-ps4": "Secundária PS4"
 };
 
-var ALT = "ATENÃÃO - NÃO CRIAR O USUÃRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE";
+var ALT = "ATENÇÃO - NÃO CRIAR O USUÁRIO COMO CONVIDADO ! - APERTE EM INICIAR SESSÃO MANUALMENTE";
 
 var TP5 = [
-  "ParabÃ©ns! VocÃª adquiriu a sua licenÃ§a PRIMÃRIA que te dÃ¡ direito a usar esta conta em 1 VÃDEO GAME!",
+  "Parabéns! Você adquiriu a sua licença PRIMÁRIA que te dá direito a usar esta conta em 1 VÍDEO GAME!",
   "",
-  "TERMOS DE GARANTIA E ORIENTAÃÃES",
+  "TERMOS DE GARANTIA E ORIENTAÇÕES",
   "",
   "1 - Os dados da conta devem permanecer inalterados (login, senha, ID ou qualquer outra coisa).",
-  "2 - NÃ£o Ã© permitido RETIRAR verificaÃ§Ã£o de duas etapas da conta.",
-  "3 - O cliente que desobedecer aos itens 1 e 2, irÃ¡ perder a conta sem direito de devoluÃ§Ã£o.",
-  "4 - A conta nÃ£o deve ser compartilhada, sob pena de perda de garantia e acesso.",
-  "5 - Em caso de versÃ£o errada, jogos errados ou coisa do tipo, nos avise em atÃ© 7 dias, em respeito ao prazo legal.",
-  "6 - UsuÃ¡rio primÃ¡rio nÃ£o pode ficar acessando a conta criada, evitar ao mÃ¡ximo entrar nela, e sempre jogar nos demais usuÃ¡rios presentes no PS5.",
-  "7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e nÃ£o daremos mais suporte.",
-  "8 - Se excluir a conta do game, ele nÃ£o abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.",
+  "2 - Não é permitido RETIRAR verificação de duas etapas da conta.",
+  "3 - O cliente que desobedecer aos itens 1 e 2, irá perder a conta sem direito de devolução.",
+  "4 - A conta não deve ser compartilhada, sob pena de perda de garantia e acesso.",
+  "5 - Em caso de versão errada, jogos errados ou coisa do tipo, nos avise em até 7 dias, em respeito ao prazo legal.",
+  "6 - Usuário primário não pode ficar acessando a conta criada, evitar ao máximo entrar nela, e sempre jogar nos demais usuários presentes no PS5.",
+  "7 - Se a conta enviada for doada, trocada ou vendida, a garantia se encerra e não daremos mais suporte.",
+  "8 - Se excluir a conta do game, ele não abre. Portanto, enquanto quiser jogar, precisa deixar a conta no seu PS5.",
   "9 - Damos garantia a perda de login e senha pelo prazo de 1 ano.",
-  "10 - Em caso de formataÃ§Ã£o do seu PS5, pedimos que grave um vÃ­deo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.",
-  "11 - Em caso de troca de console, pedimos que grave um vÃ­deo excluindo nossa conta antes.",
-  "12 - O acesso Ã© vitalicio, se a conta permanecer no seu console original de primeira compra.",
+  "10 - Em caso de formatação do seu PS5, pedimos que grave um vídeo excluindo nossa conta antes, para caso querer outro acesso, esse mesmo seja gratuito.",
+  "11 - Em caso de troca de console, pedimos que grave um vídeo excluindo nossa conta antes.",
+  "12 - O acesso é vitalicio, se a conta permanecer no seu console original de primeira compra.",
   "13 - Quaisquer problemas, basta comunicar a este whatsapp 45999417922."
 ].join("\n");
 
 var TP4 = TP5.replace(/PS5/g, "PS4");
-var TS5 = TP5.replace("PRIMÃRIA", "SECUNDÃRIA").replace("UsuÃ¡rio primÃ¡rio", "UsuÃ¡rio secundÃ¡rio");
-var TS4 = TP4.replace("PRIMÃRIA", "SECUNDÃRIA").replace("UsuÃ¡rio primÃ¡rio", "UsuÃ¡rio secundÃ¡rio");
+var TS5 = TP5.replace("PRIMÁRIA", "SECUNDÁRIA").replace("Usuário primário", "Usuário secundário");
+var TS4 = TP4.replace("PRIMÁRIA", "SECUNDÁRIA").replace("Usuário primário", "Usuário secundário");
 
 var TUTS = {
   "prima-ps5": { text: TP5, link: "https://www.youtube.com/watch?v=ZnrUUgHKYKA" },
@@ -67,7 +67,6 @@ function pConsMeta(order) {
   var meta = order.meta_data || [];
   for (var i = 0; i < meta.length; i++) {
     var k = (meta[i].key || "").toLowerCase();
-    // WooCommerce sends console as _billing_console_ or billing_console or similar
     if (k === "_billing_console_" || k === "billing_console_" || k === "billing_console" || k === "_billing_console" || k.includes("console")) {
       var v = (meta[i].value || "").toString().toLowerCase();
       if (v.includes("ps5") || v.includes("playstation 5")) return "PS5";
@@ -78,7 +77,7 @@ function pConsMeta(order) {
 }
 
 function pLic(name) {
-  return (name || "").toLowerCase().includes("secund") ? "SecundÃ¡ria" : "PrimÃ¡ria";
+  return (name || "").toLowerCase().includes("secund") ? "Secundária" : "Primária";
 }
 
 function pGame(name) {
@@ -120,7 +119,7 @@ async function sendDraft(tok, to, subj, html) {
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   var r = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts", {
     method: "POST",
-    headers: { "Authorization": "Bearer " + tok, "Content-Type": "application/json" },
+    headers: { "Authorization": "Bearer " + tok, "Content-Type: application/json" },
     body: JSON.stringify({ message: { raw: raw } })
   });
   return r.json();
@@ -129,15 +128,14 @@ async function sendDraft(tok, to, subj, html) {
 async function makeDraft(tok, item, order, cn, num, sn, wpp, cm) {
   var cons = cm || pCons(item.name) || "PS5";
   var lm = (item.meta_data || []).find(function(m) {
-    return m.key === "LicenÃ§as" || m.key === "pa_licencas" || (m.key || "").toLowerCase().includes("licen");
+    return m.key === "Licenças" || m.key === "pa_licencas" || (m.key || "").toLowerCase().includes("licen");
   });
   var licRaw = lm ? (lm.display_value || lm.value || "") : "";
-  // Normalize: "primaria" -> "PrimÃ¡ria", "secundaria" -> "SecundÃ¡ria"
   var lic;
   if (licRaw) {
     var licL = licRaw.toLowerCase();
-    if (licL.includes("secund")) lic = "SecundÃ¡ria";
-    else if (licL.includes("prim")) lic = "PrimÃ¡ria";
+    if (licL.includes("secund")) lic = "Secundária";
+    else if (licL.includes("prim")) lic = "Primária";
     else lic = licRaw;
   } else {
     lic = pLic(item.name);
@@ -152,28 +150,28 @@ async function makeDraft(tok, item, order, cn, num, sn, wpp, cm) {
     headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01", "x-api-key": process.env.ANTHROPIC_API_KEY },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514", max_tokens: 300,
-      system: "Agente da loja " + sn + ". Escreva: [S]saudaÃ§Ã£o 1 linha[/S][E]encerramento 1 linha[/E]",
+      system: "Agente da loja " + sn + ". Escreva: [S]saudação 1 linha[/S][E]encerramento 1 linha[/E]",
       messages: [{ role: "user", content: cn + " | #" + num + " | " + gn + " | " + cons + " | " + lic }]
     })
   });
   var ct = ((await cr.json()).content || []).map(function(c) { return c.text || ""; }).join("");
   var sm = ct.match(/\[S\]([\s\S]*?)\[\/S\]/);
   var em = ct.match(/\[E\]([\s\S]*?)\[\/E\]/);
-  var sau = sm ? sm[1].trim() : "OlÃ¡, " + cn + "!";
-  var enc = em ? em[1].trim() : "Qualquer dÃºvida estamos Ã  disposiÃ§Ã£o!";
+  var sau = sm ? sm[1].trim() : "Olá, " + cn + "!";
+  var enc = em ? em[1].trim() : "Qualquer dúvida estamos à disposição!";
   var wl = wpp ? "WhatsApp: " + wpp + "<br>" : "";
   var arow = '<p style="color:red;font-weight:bold;margin:6px 0">' + ALT + '</p>';
   arow = arow + arow + arow;
   var tlink = tut.link
-    ? '<p><strong>VÃDEO DE TUTORIAL (' + TL[tk] + '): </strong><a href="' + tut.link + '">' + tut.link + '</a></p>'
+    ? '<p><strong>VÍDEO DE TUTORIAL (' + TL[tk] + '): </strong><a href="' + tut.link + '">' + tut.link + '</a></p>'
     : "";
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#222">'
     + '<p>' + sau + '</p>'
     + '<table style="border:1px solid #ccc;border-collapse:collapse;margin:14px 0">'
-    + '<tr style="background:#f5f5f5"><td colspan="2" style="padding:8px 12px;font-weight:bold;border:1px solid #ccc">DADOS DE CRIAÃÃO DA CONTA</td></tr>'
+    + '<tr style="background:#f5f5f5"><td colspan="2" style="padding:8px 12px;font-weight:bold;border:1px solid #ccc">DADOS DE CRIAÇÃO DA CONTA</td></tr>'
     + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Email</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1;min-width:180px"></td></tr>'
     + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Senha</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
-    + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">CÃ³digo</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
+    + '<tr><td style="padding:8px 12px;border:1px solid #ccc;font-weight:bold">Código</td><td style="padding:8px 12px;border:1px solid #ccc;background:#fff8e1"></td></tr>'
     + '</table>'
     + arow + tlink
     + '<p>' + nl2br(tut.text) + '</p>'
@@ -194,8 +192,6 @@ exports.handler = async function(event) {
     if (!["processing", "completed"].includes(order.status)) return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
 
     var num = order.number || order.id;
-
-    // Deduplication: ignore same order processed in last 60 seconds
     const key = "order-" + num;
     const now = Date.now();
     if (processed[key] && (now - processed[key]) < 60000) {
@@ -213,9 +209,7 @@ exports.handler = async function(event) {
       drafts.push(res);
     }
 
-    // Mark as processed
     processed[key] = Date.now();
-
     return { statusCode: 200, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ success: true, drafts: drafts, count: drafts.length }) };
   } catch(e) {
     return { statusCode: 500, headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ error: e.message }) };
