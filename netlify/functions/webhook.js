@@ -119,7 +119,7 @@ async function sendDraft(tok, to, subj, html) {
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   var r = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/drafts", {
     method: "POST",
-    headers: { "Authorization": "Bearer " + tok, "Content-Type: application/json" },
+    headers: { "Authorization": "Bearer " + tok, "Content-Type": "application/json" },
     body: JSON.stringify({ message: { raw: raw } })
   });
   return r.json();
