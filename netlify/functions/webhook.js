@@ -67,8 +67,9 @@ function pConsMeta(order) {
   var meta = order.meta_data || [];
   for (var i = 0; i < meta.length; i++) {
     var k = (meta[i].key || "").toLowerCase();
-    if (k.includes("console")) {
-      var v = (meta[i].value || "").toLowerCase();
+    // WooCommerce sends console as _billing_console_ or billing_console or similar
+    if (k === "_billing_console_" || k === "billing_console_" || k === "billing_console" || k === "_billing_console" || k.includes("console")) {
+      var v = (meta[i].value || "").toString().toLowerCase();
       if (v.includes("ps5") || v.includes("playstation 5")) return "PS5";
       if (v.includes("ps4") || v.includes("playstation 4")) return "PS4";
     }
@@ -128,9 +129,19 @@ async function sendDraft(tok, to, subj, html) {
 async function makeDraft(tok, item, order, cn, num, sn, wpp, cm) {
   var cons = pCons(item.name) || cm || "PS5";
   var lm = (item.meta_data || []).find(function(m) {
-    return m.key === "Licenças" || (m.key || "").toLowerCase().includes("licen");
+    return m.key === "Licenças" || m.key === "pa_licencas" || (m.key || "").toLowerCase().includes("licen");
   });
-  var lic = lm ? lm.value : pLic(item.name);
+  var licRaw = lm ? (lm.display_value || lm.value || "") : "";
+  // Normalize: "primaria" -> "Primária", "secundaria" -> "Secundária"
+  var lic;
+  if (licRaw) {
+    var licL = licRaw.toLowerCase();
+    if (licL.includes("secund")) lic = "Secundária";
+    else if (licL.includes("prim")) lic = "Primária";
+    else lic = licRaw;
+  } else {
+    lic = pLic(item.name);
+  }
   var tk = getTK(cons, lic);
   var tut = TUTS[tk] || TUTS["prima-ps5"];
   var gn = pGame(item.name);
