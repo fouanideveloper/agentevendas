@@ -1,13 +1,13 @@
 // In-memory dedup cache
 const processed = {};
 
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyGMJk6kZKRkDXwSedOppQgk8sA38HLEd6Fh1-GOwkTum4X1qktwgT2AYt41vyjqbXQjg/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz1-CiuNiv14S2A4hgJufbD6Q6gKpLS50mYkSjGSG3AervH1betX3lqJcJWXs-pIG9pwQ/exec";
 
 var TL = {
-  "prima-ps5": "Primária PS5",
-  "prima-ps4": "Primária PS4",
-  "secun-ps5": "Secundária PS5",
-  "secun-ps4": "Secundária PS4"
+  "prima-ps5": "PrimÃ¡ria PS5",
+  "prima-ps4": "PrimÃ¡ria PS4",
+  "secun-ps5": "SecundÃ¡ria PS5",
+  "secun-ps4": "SecundÃ¡ria PS4"
 };
 
 function getTK(cons, lic) {
@@ -46,7 +46,7 @@ function pConsMeta(order) {
 }
 
 function pLic(name) {
-  return (name || "").toLowerCase().includes("secund") ? "Secundária" : "Primária";
+  return (name || "").toLowerCase().includes("secund") ? "SecundÃ¡ria" : "PrimÃ¡ria";
 }
 
 function pGame(name) {
